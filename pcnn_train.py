@@ -24,9 +24,11 @@ def train_or_test(model, data_loader, optimizer, loss_op, device, args, epoch, m
     loss_tracker = mean_tracker()
     
     for batch_idx, item in enumerate(tqdm(data_loader)):
-        model_input, _ = item
-        model_input = model_input.to(device)
-        model_output = model(model_input)
+        # TODO: Replace the _ with a name to use the labels from data
+        model_input, label = item
+        model_input, label = model_input.to(device), label.to(device)
+        # TODO: Feed the model with label
+        model_output = model(model_input, label)
         loss = loss_op(model_input, model_output)
         loss_tracker.update(loss.item()/deno)
         if mode == 'training':
@@ -67,11 +69,11 @@ if __name__ == '__main__':
     
     # model
     parser.add_argument('-q', '--nr_resnet', type=int, default=5,
-                        help='Number of residual blocks per stage of the model')
+                        help='Number of residual blocks per stage of the model') # Decrease this to speed up training for debug
     parser.add_argument('-n', '--nr_filters', type=int, default=160,
-                        help='Number of filters to use across the model. Higher = larger model.')
+                        help='Number of filters to use across the model. Higher = larger model.') # Decrease this to speed up training for debug
     parser.add_argument('-m', '--nr_logistic_mix', type=int, default=10,
-                        help='Number of logistic components in the mixture. Higher = more flexible model')
+                        help='Number of logistic components in the mixture. Higher = more flexible model') # Decrease this to speed up training for debug
     parser.add_argument('-l', '--lr', type=float,
                         default=0.0002, help='Base learning rate')
     parser.add_argument('-e', '--lr_decay', type=float, default=0.999995,
@@ -119,7 +121,7 @@ if __name__ == '__main__':
 
     #set device
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    kwargs = {'num_workers':1, 'pin_memory':True, 'drop_last':True}
+    kwargs = {'num_workers':0, 'pin_memory':True, 'drop_last':True}
 
     # set data
     if "mnist" in args.dataset:

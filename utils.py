@@ -72,6 +72,7 @@ def discretized_mix_logistic_loss(x, l):
     # log probability for edge case of 255 (before scaling)
     log_one_minus_cdf_min = -F.softplus(min_in)
     cdf_delta = cdf_plus - cdf_min  # probability for all other cases
+    # TODO: No need to change below
     mid_in = inv_stdv * centered_x
     # log probability in the center of the bin, to be used in extreme cases
     # (not actually used in our code)
@@ -96,8 +97,10 @@ def discretized_mix_logistic_loss(x, l):
     inner_out        = inner_cond * log_one_minus_cdf_min + (1. - inner_cond) * inner_inner_out
     cond             = (x < -0.999).float()
     log_probs        = cond * log_cdf_plus + (1. - cond) * inner_out
+    # TODO: No need to change above
     log_probs        = torch.sum(log_probs, dim=3) + log_prob_from_logits(logit_probs)
     
+    # TODO: Change this line to get the log prob of the whole picture
     return -torch.sum(log_sum_exp(log_probs))
 
 

@@ -20,6 +20,7 @@ NUM_CLASSES = len(my_bidict)
 # Begin of your code
 def get_label(model, model_input, device):
     answer = model(model_input, device)
+    # TODO: make sure the shape of the answer is the same as the "original_label" below on line 36
     return answer
 # End of your code
 
@@ -64,6 +65,7 @@ if __name__ == '__main__':
     #Write your code here
     #You should replace the random classifier with your trained model
     #Begin of your code
+    # TODO: Define my model, load the checkpoint
     model = random_classifier(NUM_CLASSES)
     #End of your code
     
